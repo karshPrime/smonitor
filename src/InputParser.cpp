@@ -7,9 +7,49 @@
 
 //- External Calls ---------------------------------------------------------------------------------
 
-Arguments parse_inputs( int, char* [] )
+Arguments parse_inputs( int argc, char* argv[] )
 {
-    Arguments Result;
+    Arguments Result = {
+        .BaudRate  = 9600,
+        .Port      = 1,
+        .Save      = 0,
+        .Duration  = 60,
+        .HumanTime = false,
+    };
+
+    std::string port_head = "/dev/";
+
+    for ( int i = 0; i < argc; i++ )
+    {
+        if (strncmp(argv[i], port_head.c_str(), port_head.length()) == 0)
+        {
+            Result.Port = i;
+        }
+        else if ( strstr(argv[i], ".txt") != nullptr )
+        {
+            Result.Save = i;
+        }
+        else if ( strcmp( argv[i], "--human-time" ) == 0 )
+        {
+            Result.HumanTime = true;
+        }
+        else if ( isdigit( argv[i][0] ) && atoi( argv[i] ) > 0 )
+        {
+            Result.BaudRate = atoi( argv[i] );
+        }
+        else if ( strcmp( argv[i], "-d" ) == 0 )
+        {
+            if ( i+1 < argc && isdigit( argv[i+1][0] ) && atoi( argv[i+1] ) > 0 )
+            {
+                Result.Duration = atoi( argv[i+1] );
+                i++;
+            }
+            else
+            {
+                std::cerr << "Error: Invalid duration.\n";
+            }
+        }
+    }
 
     return Result;
 }
