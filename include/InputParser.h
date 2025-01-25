@@ -9,8 +9,8 @@ typedef struct {
     uint  Port;
     uint  Save;
     uint  Duration;
+    bool  HumanTime;
 } Arguments;
-
 
 Arguments parse_inputs( int, char* [] );
 void print_usage();

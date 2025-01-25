@@ -17,23 +17,26 @@ Arguments parse_inputs( int, char* [] )
 void print_usage()
 {
     std::cout
-        << "Usage:\n"
-        << "  monitor [port] [baud] -d {duration} -o {file}\n\n"
+        << "\nUsage:\n"
+        << "  monitor [port] [baud] {file.txt} -d {duration}\n"
 
-        << "Options:\n"
+        << "\nOptions:\n"
         << "  port              Port to connect to (required)\n"
         << "  baud              Baud rate for serial communication (e.g., 9600, 19200)\n"
         << "  duration          Time in seconds for serial read. 0 for forever. (default 60)\n"
-        << "  file              Path to the output file where logs will be saved\n\n"
+        << "  file              Path to the file.txt where logs will be saved\n"
 
-        << "Example:\n"
+        << "\nFlags:\n"
+        << "  --human-time      Instead of µs, get time in hh:mm:ss.SSS\n"
+
+        << "\nExample:\n"
         << "  $ monitor /dev/tty.usbmodem101 115200 -d 600 -o ./data.txt\n"
-        << "  This command saves logs for 10 minutes in data.txt\n\n"
+        << "  This command saves logs for 10 minutes in data.txt\n"
 
-        << "  $ monitor /dev/tty.usbmodem101 9600 -d 0\n"
-        << "  This command prints timestamps indefinitely.\n\n"
+        << "  $ monitor /dev/tty.usbmodem101 9600 -d 0 --human-time\n"
+        << "  This command prints serial data indefinitely with time in hh:mm:ss.SSS.\n"
 
-        << "Notes:\n"
+        << "\nNotes:\n"
         << "  - Ensure the specified port is correct and accessible.\n"
         << "  - The duration is specified in seconds; use 0 for continuous logging, but it\n"
         << "    cannot be set to 0 when writing to a file.\n"

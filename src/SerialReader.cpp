@@ -49,13 +49,30 @@ void SerialReader::configurePort()
 
 void SerialReader::currentTime( std::ostream& aStream )
 {
-    bool fHumanTime = true;
-
     const int64_t TIME = time::duration_cast<time::microseconds>(
         time::high_resolution_clock::now().time_since_epoch()
     ).count();
 
-    aStream << TIME << "µs : ";
+    if ( fHumanTime )
+    {
+        const int64_t TOTAL_SECONDS = TIME / 1000000;
+        const int64_t MILLISECONDS = ( TIME % 1000000 ) / 1000;
+        const int64_t HOURS = TOTAL_SECONDS / 3600;
+        const int64_t MINUTES = ( TOTAL_SECONDS % 3600 ) / 60;
+        const int64_t SECONDS = TOTAL_SECONDS % 60;
+
+        // hh:mm:ss.SSS
+        aStream
+            << std::setw(2) << std::setfill('0') << HOURS << ":"
+            << std::setw(2) << std::setfill('0') << MINUTES << ":"
+            << std::setw(2) << std::setfill('0') << SECONDS << "."
+            << std::setw(3) << std::setfill('0') << MILLISECONDS
+            << " : ";
+    }
+    else
+    {
+        aStream << TIME << "µs : ";
+    }
 }
 
 
@@ -65,6 +82,15 @@ void SerialReader::readValues( std::ostream& aStream )
 
     do
     {
+        char lBuffer[1];
+        int lSerialRead = read( fFileDescriptor, lBuffer, 1 );
+
+        if ( lSerialRead <  0 ) throw std::runtime_error( "Error reading from serial port" );
+        if ( lSerialRead == 0 ) continue;
+
+        aStream << lBuffer[0];
+
+        if ( lBuffer[0] == '\n' ) currentTime( aStream );
     }
     while
     (

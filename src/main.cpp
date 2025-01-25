@@ -9,7 +9,7 @@ int main( int argc, char* argv[] )
 {
     if ( argc < 2 )
     {
-        std::cerr << "Error: Missing required argument\n\n";
+        std::cerr << "Error: Missing required argument\n";
         print_usage();
         return 1;
     }
@@ -21,7 +21,8 @@ int main( int argc, char* argv[] )
         SerialReader Reader(
             argv[INPUTS.Port],
             INPUTS.Duration,
-            INPUTS.BaudRate
+            INPUTS.BaudRate,
+            INPUTS.HumanTime
         );
         Reader.OpenPort();
 
