@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fcntl.h>
 #include <unistd.h>
-#include <cstdint>
+#include <ostream>
 #include <stdexcept>
 
 #define time std::chrono
@@ -49,29 +49,28 @@ void SerialReader::configurePort()
 
 void SerialReader::currentTime( std::ostream& aStream )
 {
-    const int64_t TIME = time::duration_cast<time::microseconds>(
-        time::high_resolution_clock::now().time_since_epoch()
-    ).count();
 
     if ( fHumanTime )
     {
-        const int64_t TOTAL_SECONDS = TIME / 1000000;
-        const int64_t MILLISECONDS = ( TIME % 1000000 ) / 1000;
-        const int64_t HOURS = TOTAL_SECONDS / 3600;
-        const int64_t MINUTES = ( TOTAL_SECONDS % 3600 ) / 60;
-        const int64_t SECONDS = TOTAL_SECONDS % 60;
+        const auto NOW = time::system_clock::now();
+        const auto NOW_C = time::system_clock::to_time_t( NOW );
+        const std::tm LOCAL_TM = *std::localtime( &NOW_C );
+        auto milliseconds = time::duration_cast<time::milliseconds>
+            ( NOW.time_since_epoch() ) % 1000;
 
-        // hh:mm:ss.SSS
         aStream
-            << std::setw(2) << std::setfill('0') << HOURS << ":"
-            << std::setw(2) << std::setfill('0') << MINUTES << ":"
-            << std::setw(2) << std::setfill('0') << SECONDS << "."
-            << std::setw(3) << std::setfill('0') << MILLISECONDS
+            << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_hour << ":"
+            << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_min << ":"
+            << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_sec << "."
+            << std::setw(3) << std::setfill('0') << milliseconds.count()
             << " : ";
     }
     else
     {
-        aStream << TIME << "µs : ";
+        aStream
+            << time::duration_cast<time::microseconds>(
+                time::high_resolution_clock::now().time_since_epoch()).count()
+            << "µs : ";
     }
 }
 
