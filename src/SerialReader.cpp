@@ -49,6 +49,10 @@ void SerialReader::configurePort()
 
 void SerialReader::currentTime( std::ostream& aStream )
 {
+    // only set color on macOS and Linux
+    #if !defined(_WIN32) && !defined(_WIN64)
+        std::cout << "\033[33m";
+    #endif
 
     if ( fHumanTime )
     {
@@ -72,6 +76,11 @@ void SerialReader::currentTime( std::ostream& aStream )
                 time::high_resolution_clock::now().time_since_epoch()).count()
             << "µs : ";
     }
+
+    #if !defined(_WIN32) && !defined(_WIN64)
+        std::cout << "\033[36m";
+    #endif
+
 }
 
 

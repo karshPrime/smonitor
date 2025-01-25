@@ -28,14 +28,22 @@ int main( int argc, char* argv[] )
 
         if ( INPUTS.Save == 0 )
         {
-            std::cout << "Reading data from serial port: " << argv[INPUTS.Port] << std::endl;
+            std::cout
+                << TERM_RED  "Reading data from serial port: "
+                << TERM_BLUE  argv[INPUTS.Port] << std::endl;
+
             Reader.PrintValues();
         }
         else
         {
             std::cout
-                << "Saving serial port: " << argv[INPUTS.Port] << " data in: "
-                << argv[INPUTS.Save] << std::endl;
+                << TERM_RED   "\nReading data from "
+                << TERM_BLUE  argv[INPUTS.Port]
+                << TERM_RED   " for "
+                << TERM_BLUE  INPUTS.Duration
+                << TERM_RED   " seconds and saving the read data to "
+                << TERM_BLUE  argv[INPUTS.Save]
+                << std::endl;
 
             Reader.SaveData( argv[INPUTS.Save] );
         }
