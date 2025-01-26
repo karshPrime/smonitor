@@ -32,6 +32,8 @@ int main( int argc, char* argv[] )
                 << TERM_RED  "Reading data from serial port: "
                 << TERM_BLUE  argv[INPUTS.Port] << std::endl;
 
+            TERM_COLOR_VALUE_SET
+
             Reader.PrintValues();
         }
         else
@@ -44,6 +46,8 @@ int main( int argc, char* argv[] )
                 << TERM_RED   " seconds and saving the read data to "
                 << TERM_BLUE  argv[INPUTS.Save]
                 << std::endl;
+
+            TERM_COLOR_VALUE_SET
 
             Reader.SaveData( argv[INPUTS.Save] );
         }

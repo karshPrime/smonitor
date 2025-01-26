@@ -49,10 +49,7 @@ void SerialReader::configurePort()
 
 void SerialReader::currentTime( std::ostream& aStream )
 {
-    // only set color on macOS and Linux
-    #if !defined(_WIN32) && !defined(_WIN64)
-        std::cout << "\033[33m";
-    #endif
+    TERM_COLOR_TIME_SET
 
     if ( fHumanTime )
     {
@@ -62,7 +59,7 @@ void SerialReader::currentTime( std::ostream& aStream )
         auto milliseconds = time::duration_cast<time::milliseconds>
             ( NOW.time_since_epoch() ) % 1000;
 
-        aStream
+        aStream << "\n"
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_hour << ":"
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_min << ":"
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_sec << "."
@@ -71,16 +68,13 @@ void SerialReader::currentTime( std::ostream& aStream )
     }
     else
     {
-        aStream
+        aStream << "\n"
             << time::duration_cast<time::microseconds>(
                 time::high_resolution_clock::now().time_since_epoch()).count()
             << "µs : ";
     }
 
-    #if !defined(_WIN32) && !defined(_WIN64)
-        std::cout << "\033[36m";
-    #endif
-
+    TERM_COLOR_VALUE_SET
 }
 
 
@@ -95,10 +89,10 @@ void SerialReader::readValues( std::ostream& aStream )
 
         if ( lSerialRead <  0 ) throw std::runtime_error( "Error reading from serial port" );
         if ( lSerialRead == 0 ) continue;
+        if ( lBuffer[0] == '\n' ) currentTime( aStream );
+        if ( lBuffer[0] < 32 || lBuffer[0] > 126 ) continue; // not valid ASCII character
 
         aStream << lBuffer[0];
-
-        if ( lBuffer[0] == '\n' ) currentTime( aStream );
     }
     while
     (
