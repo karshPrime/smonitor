@@ -2,46 +2,47 @@
 // input_parser.cpp
 
 #include <iostream>
+#include <stdlib.h>
 #include "InputParser.h"
 
 
 //- External Calls ---------------------------------------------------------------------------------
 
-Arguments parse_inputs( int argc, char* argv[] )
+Arguments* parse_inputs( int argc, char* argv[] )
 {
-    Arguments Result = {
-        .BaudRate  = 9600,
-        .Port      = 1,
-        .Save      = 0,
-        .Duration  = 60,
-        .HumanTime = false,
-    };
+    Arguments* Result = (Arguments*)malloc( sizeof(Arguments) );
 
-    std::string port_head = "/dev/";
+    Result->BaudRate  = 9600;
+    Result->Port      = 1;
+    Result->Save      = 0;
+    Result->Duration  = 60;
+    Result->HumanTime = false;
+
+    const std::string PORT_HEAD = "/dev/";
 
     for ( int i = 0; i < argc; i++ )
     {
-        if (strncmp(argv[i], port_head.c_str(), port_head.length()) == 0)
+        if ( strncmp(argv[i], PORT_HEAD.c_str(), PORT_HEAD.length()) == 0 )
         {
-            Result.Port = i;
+            Result->Port = i;
         }
         else if ( strstr(argv[i], ".txt") != nullptr )
         {
-            Result.Save = i;
+            Result->Save = i;
         }
         else if ( strcmp( argv[i], "--human-time" ) == 0 )
         {
-            Result.HumanTime = true;
+            Result->HumanTime = true;
         }
         else if ( isdigit( argv[i][0] ) && atoi( argv[i] ) > 0 )
         {
-            Result.BaudRate = atoi( argv[i] );
+            Result->BaudRate = atoi( argv[i] );
         }
         else if ( strcmp( argv[i], "-d" ) == 0 )
         {
             if ( i+1 < argc && isdigit( argv[i+1][0] ) && atoi( argv[i+1] ) > 0 )
             {
-                Result.Duration = atoi( argv[i+1] );
+                Result->Duration = atoi( argv[i+1] );
                 i++;
             }
             else

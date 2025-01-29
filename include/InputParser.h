@@ -3,7 +3,6 @@
 
 #include <sys/types.h>
 
-
 typedef struct {
     int   BaudRate;
     uint  Port;
@@ -12,6 +11,6 @@ typedef struct {
     bool  HumanTime;
 } Arguments;
 
-Arguments parse_inputs( int, char* [] );
+Arguments* parse_inputs( int, char* [] );
 void print_usage();
 

@@ -2,6 +2,7 @@
 // main.cpp
 
 #include <iostream>
+#include <stdlib.h>
 #include "InputParser.h"
 #include "SerialReader.h"
 
@@ -14,23 +15,23 @@ int main( int argc, char* argv[] )
         return 1;
     }
 
-    const Arguments INPUTS = parse_inputs( argc, argv );
+    const Arguments* INPUTS = parse_inputs( argc, argv );
 
     try
     {
         SerialReader Reader(
-            argv[INPUTS.Port],
-            INPUTS.Duration,
-            INPUTS.BaudRate,
-            INPUTS.HumanTime
+            argv[INPUTS->Port],
+            INPUTS->Duration,
+            INPUTS->BaudRate,
+            INPUTS->HumanTime
         );
         Reader.OpenPort();
 
-        if ( INPUTS.Save == 0 )
+        if ( INPUTS->Save == 0 )
         {
             std::cout
                 << TERM_RED  "Reading data from serial port: "
-                << TERM_BLUE  argv[INPUTS.Port] << std::endl;
+                << TERM_BLUE  argv[INPUTS->Port] << std::endl;
 
             TERM_COLOR_VALUE_SET
 
@@ -40,16 +41,16 @@ int main( int argc, char* argv[] )
         {
             std::cout
                 << TERM_RED   "\nReading data from "
-                << TERM_BLUE  argv[INPUTS.Port]
+                << TERM_BLUE  argv[INPUTS->Port]
                 << TERM_RED   " for "
-                << TERM_BLUE  INPUTS.Duration
+                << TERM_BLUE  INPUTS->Duration
                 << TERM_RED   " seconds and saving the read data to "
-                << TERM_BLUE  argv[INPUTS.Save]
+                << TERM_BLUE  argv[INPUTS->Save]
                 << std::endl;
 
             TERM_COLOR_VALUE_SET
 
-            Reader.SaveData( argv[INPUTS.Save] );
+            Reader.SaveData( argv[INPUTS->Save] );
         }
     }
     catch ( const std::exception& e )
@@ -57,6 +58,8 @@ int main( int argc, char* argv[] )
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
+
+    free( (void*)INPUTS );
 
     return 0;
 }
