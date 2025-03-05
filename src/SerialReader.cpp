@@ -81,18 +81,24 @@ void SerialReader::currentTime( std::ostream& aStream )
 void SerialReader::readValues( std::ostream& aStream )
 {
     auto lStartTime = time::steady_clock::now();
+    char lBuffer[256];
 
     do
     {
-        char lBuffer[1];
         int lSerialRead = read( fFileDescriptor, lBuffer, 1 );
 
-        if ( lSerialRead <  0 ) throw std::runtime_error( "Error reading from serial port" );
-        if ( lSerialRead == 0 ) continue;
-        if ( lBuffer[0] == '\n' ) currentTime( aStream );
-        if ( lBuffer[0] < 32 || lBuffer[0] > 126 ) continue; // not valid ASCII character
+        if ( lSerialRead <  0 )
+        {
+            throw std::runtime_error( "Error reading from serial port" );
+        }
+        else
+        {
+            if ( lBuffer[0] == '\n' ) currentTime( aStream );
+            else if ( lBuffer[0] < 32 || lBuffer[0] > 126 ) continue; // not valid ASCII character
 
-        aStream << lBuffer[0];
+            aStream.write( lBuffer, lSerialRead );
+            aStream.flush();
+        }
     }
     while
     (
