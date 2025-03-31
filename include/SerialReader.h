@@ -30,7 +30,7 @@ private:
 
     void configurePort();
     void currentTime( std::ostream& );
-    void readValues( std::ostream& );
+    void readValues( bool, std::ostream& );
 
 public:
     SerialReader( const string& Port, int Duration, int BaudRate, bool HumanTime ) :
@@ -45,7 +45,7 @@ public:
 
     void OpenPort();
     void ClosePort();
-    void PrintValues();
-    void SaveData( char* );
+    void PrintValues( bool );
+    void SaveData( bool, char* );
 };
 

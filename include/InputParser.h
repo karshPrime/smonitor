@@ -9,6 +9,7 @@ typedef struct {
     uint  Save;
     uint  Duration;
     bool  HumanTime;
+    bool  NoTime;
 } Arguments;
 
 Arguments* parse_inputs( int, char* [] );

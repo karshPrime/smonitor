@@ -17,6 +17,7 @@ Arguments* parse_inputs( int argc, char* argv[] )
     Result->Save      = 0;
     Result->Duration  = 60;
     Result->HumanTime = false;
+    Result->NoTime    = false;
 
     const std::string PORT_HEAD = "/dev/";
 
@@ -29,6 +30,10 @@ Arguments* parse_inputs( int argc, char* argv[] )
         else if ( strstr(argv[i], ".txt") != nullptr )
         {
             Result->Save = i;
+        }
+        else if ( strcmp( argv[i], "--no-time" ) == 0 )
+        {
+            Result->NoTime = true;
         }
         else if ( strcmp( argv[i], "--human-time" ) == 0 )
         {
@@ -69,6 +74,7 @@ void print_usage()
 
         << "\nFlags:\n"
         << "  --human-time      Instead of µs, get time in hh:mm:ss.SSS\n"
+        << "  --no-time         Dont print time; just the values\n"
 
         << "\nExample:\n"
         << "  $ monitor /dev/tty.usbmodem101 115200 -d 600 -o ./data.txt\n"

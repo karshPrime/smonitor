@@ -59,7 +59,7 @@ void SerialReader::currentTime( std::ostream& aStream )
         auto milliseconds = time::duration_cast<time::milliseconds>
             ( NOW.time_since_epoch() ) % 1000;
 
-        aStream << "\n"
+        aStream
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_hour << ":"
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_min << ":"
             << std::setw(2) << std::setfill('0') << LOCAL_TM.tm_sec << "."
@@ -68,7 +68,7 @@ void SerialReader::currentTime( std::ostream& aStream )
     }
     else
     {
-        aStream << "\n"
+        aStream
             << time::duration_cast<time::microseconds>(
                 time::high_resolution_clock::now().time_since_epoch()).count()
             << "µs : ";
@@ -78,7 +78,7 @@ void SerialReader::currentTime( std::ostream& aStream )
 }
 
 
-void SerialReader::readValues( std::ostream& aStream )
+void SerialReader::readValues( bool aNoTime, std::ostream& aStream )
 {
     auto lStartTime = time::steady_clock::now();
     char lBuffer[256];
@@ -93,8 +93,8 @@ void SerialReader::readValues( std::ostream& aStream )
         }
         else
         {
-            if ( lBuffer[0] == '\n' ) currentTime( aStream );
-            else if ( lBuffer[0] < 32 || lBuffer[0] > 126 ) continue; // not valid ASCII character
+            if ( aNoTime && lBuffer[0] == '\n' ) currentTime( aStream );
+            if ( lBuffer[0] != '\n' && lBuffer[0] < 32 || lBuffer[0] > 126 ) continue; // not valid ASCII character
 
             aStream.write( lBuffer, lSerialRead );
             aStream.flush();
@@ -130,13 +130,13 @@ void SerialReader::ClosePort()
 }
 
 
-void SerialReader::PrintValues()
+void SerialReader::PrintValues( bool aNoTime )
 {
-    readValues( std::cout );
+    readValues( aNoTime, std::cout );
 }
 
 
-void SerialReader::SaveData( char* aFileName )
+void SerialReader::SaveData( bool aNoTime, char* aFileName )
 {
     std::ofstream lFileStream( aFileName );
     if ( !lFileStream.is_open() )
@@ -147,7 +147,7 @@ void SerialReader::SaveData( char* aFileName )
 
     if ( fDuration == 0 ) { fDuration = 60; }
 
-    readValues( lFileStream );
+    readValues( aNoTime, lFileStream );
 
     lFileStream.close();
 }

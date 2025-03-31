@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+
 #include "InputParser.h"
 #include "SerialReader.h"
 
@@ -35,7 +36,7 @@ int main( int argc, char* argv[] )
 
             TERM_COLOR_VALUE_SET
 
-            Reader.PrintValues();
+            Reader.PrintValues( INPUTS->NoTime );
         }
         else
         {
@@ -50,7 +51,7 @@ int main( int argc, char* argv[] )
 
             TERM_COLOR_VALUE_SET
 
-            Reader.SaveData( argv[INPUTS->Save] );
+            Reader.SaveData( INPUTS->NoTime, argv[INPUTS->Save] );
         }
     }
     catch ( const std::exception& e )
