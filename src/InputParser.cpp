@@ -64,7 +64,7 @@ void print_usage()
 {
     std::cout
         << "\nUsage:\n"
-        << "  monitor [port] [baud] {file.txt} -d {duration}\n"
+        << "  smonitor [port] [baud] {file.txt} -d {duration}\n"
 
         << "\nOptions:\n"
         << "  port              Port to connect to (required)\n"
@@ -90,5 +90,13 @@ void print_usage()
         << "  - The output file will be created if it does not exist, or overwritten if it does.\n"
         << "  - Logs are written to the file whenever a filename is specified.\n"
         << "  - Use the --ignore-values flag if you only want to log the timestamps.\n";
+}
+
+bool input_help( char *aPrompt )
+{
+    return
+        strcmp( aPrompt, "--help" ) == 0 ||
+        strcmp( aPrompt, "help" ) == 0 ||
+        strcmp( aPrompt, "-h" ) == 0;
 }
 

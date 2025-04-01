@@ -14,4 +14,5 @@ typedef struct {
 
 Arguments* parse_inputs( int, char* [] );
 void print_usage();
+bool input_help( char * );
 

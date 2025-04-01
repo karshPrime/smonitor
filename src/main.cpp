@@ -16,6 +16,13 @@ int main( int argc, char* argv[] )
         return 1;
     }
 
+    if ( input_help( argv[1] ) )
+    {
+        std::cout << "SerialMonitor, a simple lightweight tool to read and store serial data\n";
+        print_usage();
+        return 0;
+    }
+
     const Arguments* INPUTS = parse_inputs( argc, argv );
 
     try
